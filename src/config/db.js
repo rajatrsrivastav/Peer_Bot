@@ -10,4 +10,10 @@ export const createConnection = () =>
     })
     .catch((error) => console.log("Error connecting to MongoDB:", error));
 
-createConnection();
+// Don't auto-connect during build
+if (process.env.NODE_ENV !== 'production' || process.env.VERCEL !== '1') {
+  // Only connect in development
+  if (typeof window === 'undefined') {
+    createConnection();
+  }
+}
