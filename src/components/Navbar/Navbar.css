@@ -100,6 +100,37 @@
   align-items: center;
   gap: 0.75rem;
 }
+
+.navbar__user {
+  display: none;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.4rem 0.75rem;
+  background: rgba(108, 92, 231, 0.08);
+  border-radius: 10px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--nb-text);
+}
+
+.navbar__userImage {
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.navbar__userName {
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@media (min-width: 768px) {
+  .navbar__user {
+    display: inline-flex;
+  }
+}
+
 .navbar__toggle {
   display: inline-flex;
   align-items: center;

@@ -1,6 +1,7 @@
 import Navbar from "@/components/Navbar/Navbar";
 import AuthProvider from "@/context/auth";
 import ChatbotProvider from "@/context/chatbot";
+import Providers from "@/components/Providers";
 import { Analytics } from "@vercel/analytics/react"
 import Script from 'next/script'
 
@@ -28,12 +29,14 @@ export default function RootLayout({ children }) {
         </Script>
       </head>
       <body>
-        <AuthProvider>
-          <ChatbotProvider>
-            <Navbar />
-            {children}
-          </ChatbotProvider>
-        </AuthProvider>
+        <Providers>
+          <AuthProvider>
+            <ChatbotProvider>
+              <Navbar />
+              {children}
+            </ChatbotProvider>
+          </AuthProvider>
+        </Providers>
         <Analytics />
       </body>
     </html>

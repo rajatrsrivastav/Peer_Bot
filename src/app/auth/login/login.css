@@ -115,6 +115,25 @@ html {
 .buttonn_form:hover { filter:brightness(1.07); }
 .buttonn_form:active { transform:translateY(2px); }
 .buttonn_form:disabled { opacity:.6; cursor:not-allowed; }
+
+.google-signin-btn {
+  background: white;
+  color: #3c4043;
+  border: 1px solid #dadce0;
+  margin-top: 0.75rem;
+  gap: 0.5rem;
+  font-weight: 500;
+}
+
+.google-signin-btn:hover {
+  background: #f8f9fa;
+  filter: none;
+}
+
+.google-signin-btn svg {
+  flex-shrink: 0;
+}
+
 .hr2{
     width: 100%;
 }

@@ -3,6 +3,7 @@ import { Bot, Menu, X } from "lucide-react"
 
 import { useContext, useState, useEffect } from "react"
 import { useRouter, usePathname } from "next/navigation"
+import { useSession, signOut } from "next-auth/react"
 
 import { AuthContext } from "@/context/auth"
 import { logout } from "@/services/auth"
@@ -14,10 +15,15 @@ import Image from 'next/image'
 
 const Navbar = () => {
   const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext)
+  const { data: session } = useSession()
   const pathname = usePathname()
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
 
+  // User is authenticated if they have either NextAuth session or custom auth token
+  const isAuthenticated = session || isLoggedIn
+
+  // Close mobile nav on route change
   useEffect(() => {
     setIsOpen(false)
   }, [pathname])
@@ -26,6 +32,13 @@ const Navbar = () => {
 
   async function handleLogout() {
     try {
+      // Handle NextAuth signout
+      if (session) {
+        await signOut({ callbackUrl: '/auth/login' })
+        return
+      }
+      
+      // Handle custom auth logout
       const token = getToken()
       if (token) {
         const response = await logout({ token })
@@ -55,14 +68,30 @@ const Navbar = () => {
             <li><Link className={isActive("/")?"is-active":""} href="/">Home</Link></li>
             <li><Link className={isActive("/about")?"is-active":""} href="/about">About</Link></li>
             <li><Link className={isActive("/explore")?"is-active":""} href="/explore">Explore</Link></li>
-            {isLoggedIn && (
+            {isAuthenticated && (
               <li><Link className={isActive("/dashboard")?"is-active":""} href="/dashboard">Dashboard</Link></li>
             )}
           </ul>
         </nav>
         <div className="navbar__actions">
-          {isLoggedIn ? (
-            <button onClick={handleLogout} className="btn btn--ghost" aria-label="Logout">Logout</button>
+          {isAuthenticated ? (
+            <>
+              {session?.user && (
+                <span className="navbar__user">
+                  {session.user.image && (
+                    <Image 
+                      src={session.user.image} 
+                      alt={session.user.name || 'User'} 
+                      width={32} 
+                      height={32} 
+                      className="navbar__userImage"
+                    />
+                  )}
+                  <span className="navbar__userName">{session.user.name || session.user.email}</span>
+                </span>
+              )}
+              <button onClick={handleLogout} className="btn btn--ghost" aria-label="Logout">Logout</button>
+            </>
           ) : (
             <Link href="/auth/login" className="btn btn--primary" aria-label="Login">Login</Link>
           )}
@@ -76,9 +105,9 @@ const Navbar = () => {
           <li><Link className={isActive("/")?"is-active":""} href="/">Home</Link></li>
           <li><Link className={isActive("/about")?"is-active":""} href="/about">About</Link></li>
           <li><Link className={isActive("/explore")?"is-active":""} href="/explore">Explore</Link></li>
-          {isLoggedIn && <li><Link className={isActive("/dashboard")?"is-active":""} href="/dashboard">Dashboard</Link></li>}
+          {isAuthenticated && <li><Link className={isActive("/dashboard")?"is-active":""} href="/dashboard">Dashboard</Link></li>}
           <li className="navbar__mobileAction">
-            {isLoggedIn ? (
+            {isAuthenticated ? (
               <button onClick={handleLogout} className="btn btn--ghost w-full">Logout</button>
             ) : (
               <Link href="/auth/login" className="btn btn--primary w-full">Login</Link>

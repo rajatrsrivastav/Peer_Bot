@@ -5,6 +5,10 @@ const userSchema = new mongoose.Schema(
   {
     email: { type: String, unique: true, required: true },
     password: { type: String, required: true },
+    name: { type: String },
+    image: { type: String },
+    googleId: { type: String, unique: true, sparse: true },
+    provider: { type: String, enum: ['credentials', 'google'], default: 'credentials' },
   },
   { timestamps: true }
 );
