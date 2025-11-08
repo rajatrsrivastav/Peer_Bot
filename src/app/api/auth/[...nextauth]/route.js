@@ -1,7 +1,7 @@
 import NextAuth from "next-auth"
-import GoogleProvider from "next-auth/providers/google";
-import User from "@/models/user";
-import dbConnect from "@/lib/dbConnect";
+import GoogleProvider from "next-auth/providers/google"
+import User from "@/models/user"
+import dbConnect from "@/lib/dbConnect"
 
 export const authOptions = {
     providers: [
@@ -18,10 +18,10 @@ export const authOptions = {
             try {
                 // Connect to database
                 await dbConnect();
-                
+
                 // Check if user already exists
                 let existingUser = await User.findOne({ email: user.email });
-                
+
                 if (!existingUser) {
                     // Create new user with Google auth
                     existingUser = await User.create({
@@ -49,7 +49,7 @@ export const authOptions = {
                         console.log('✅ Google user logged in:', existingUser.email);
                     }
                 }
-                
+
                 return true;
             } catch (error) {
                 console.error('❌ Error in signIn callback:', error);
@@ -59,17 +59,17 @@ export const authOptions = {
         async session({ session, token }) {
             try {
                 await dbConnect();
-                
+
                 // Get user from database
                 const user = await User.findOne({ email: session.user.email });
-                
+
                 if (user) {
                     session.user.id = user._id.toString();
                     session.user.name = user.name;
                     session.user.image = user.image;
                     session.user.provider = user.provider;
                 }
-                
+
                 return session;
             } catch (error) {
                 console.error('❌ Error in session callback:', error);
