@@ -4,7 +4,7 @@ import ChatbotProvider from "@/context/chatbot";
 import Providers from "@/components/Providers";
 import { Analytics } from "@vercel/analytics/react"
 import Script from 'next/script'
-
+import './globals.css'
 
 export const metadata = {
   title: "PeerBot",

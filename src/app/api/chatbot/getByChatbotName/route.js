@@ -1,15 +1,21 @@
 import { getChatbotByName, verifyToken } from "../../utils";
+import { auth } from "@/app/api/auth/[...nextauth]/route";
 
 export async function GET(req) {
   try {
-    const authHeader = req.headers.get("authorization");
-    const accessToken = authHeader?.split(" ")[1];
+    const session = await auth();
+    const isAuthenticated = !!session?.user?.email;
 
-    if (!accessToken || !verifyToken(accessToken)) {
-      return new Response(JSON.stringify({ err: "Unauthorized" }), {
-        status: 401,
-        headers: { "Content-Type": "application/json" },
-      });
+    if (!isAuthenticated) {
+      const authHeader = req.headers.get("authorization");
+      const accessToken = authHeader?.split(" ")[1];
+
+      if (!accessToken || !(await verifyToken(accessToken))) {
+        return new Response(JSON.stringify({ err: "Unauthorized" }), {
+          status: 401,
+          headers: { "Content-Type": "application/json" },
+        });
+      }
     }
 
     const { searchParams } = new URL(req.url);

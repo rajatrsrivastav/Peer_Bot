@@ -4,7 +4,10 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
-import "./signup.css";
+import { Card } from "@/components/ui/Card"
+import { Button } from "@/components/ui/Button"
+import { Input } from "@/components/ui/Input"
+import { Bot } from 'lucide-react'
 import { signup } from "@/services/auth";
 import PublicRoute from "@/components/PublicRoute";
 
@@ -14,7 +17,8 @@ function Signup() {
   const { data: session, status } = useSession();
   const [isLoading, setIsLoading] = useState(false);
   const [form, setForm] = useState({
-    name: "",
+    firstName: "",
+    lastName: "",
     email: "",
     password: "",
   });
@@ -47,12 +51,17 @@ function Signup() {
     if (isLoading) return;
     
     try {
-      if (!form.name || !form.email || !form.password) {
+      if (!form.firstName || !form.lastName || !form.email || !form.password) {
         alert("Please fill all fields!");
         return;
       }
       setIsLoading(true);
-      const response = await signup(form);
+      const signupForm = {
+        name: `${form.firstName} ${form.lastName}`,
+        email: form.email,
+        password: form.password,
+      };
+      const response = await signup(signupForm);
       const data = await response.json();
       alert(data.message);
       router.push("/auth/login");
@@ -82,94 +91,124 @@ function Signup() {
   // Show loading state while checking authentication
   if (status === 'loading') {
     return (
-      <div className="fromMain" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '100vh' }}>
+      <div className="min-h-screen bg-brand-background flex flex-col justify-center py-12 sm:px-6 lg:px-8" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
         <p>Loading...</p>
       </div>
     );
   }
 
   return (
-    <div className="fromMain">
-      <div className="headerText">
-        <h1>Create an account</h1>
-        <p>Enter your details to create your ChatBot account</p>
-      </div>
-
-      <div className="formInput">
-        <form className="form_main" onSubmit={handleSubmit}>
-          <label className="label_form">Name</label>
-          <br />
-          <input
-            className="form_input"
-            name="name"
-            type="text"
-            placeholder="Your Name"
-            value={form.name}
-            onChange={handleForm}
-            disabled={isLoading}
-          />
-          <br />
-          <label className="label_form">Email</label>
-          <br />
-          <input
-            className="form_input"
-            name="email"
-            type="email"
-            placeholder="name@example.com"
-            value={form.email}
-            onChange={handleForm}
-            disabled={isLoading}
-          />
-          <br />
-          <label className="label_form">Password</label>
-          <br />
-          <input
-            className="form_input"
-            name="password"
-            type="password"
-            placeholder="Password"
-            value={form.password}
-            onChange={handleForm}
-            disabled={isLoading}
-          />
-          <br />
-          <button className="submitButton" type="submit" disabled={isLoading}>
-            {isLoading ? (
-              <span className="signup_loading">
-                <span className="signup_spinner"></span>
-                Signing up...
-              </span>
-            ) : (
-              "Signup"
-            )}
-          </button>
-        </form>
-
-        <hr className="hr1" />
-        
-        <button 
-          className="submitButton google-signup-btn" 
-          onClick={handleGoogleSignUp}
-          type="button"
-          disabled={isLoading}
-        >
-          <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M19.6 10.227c0-.709-.064-1.39-.182-2.045H10v3.868h5.382a4.6 4.6 0 01-1.996 3.018v2.51h3.232c1.891-1.742 2.982-4.305 2.982-7.35z" fill="#4285F4"/>
-            <path d="M10 20c2.7 0 4.964-.895 6.618-2.423l-3.232-2.509c-.895.6-2.04.955-3.386.955-2.605 0-4.81-1.76-5.595-4.123H1.064v2.59A9.996 9.996 0 0010 20z" fill="#34A853"/>
-            <path d="M4.405 11.9c-.2-.6-.314-1.24-.314-1.9 0-.66.114-1.3.314-1.9V5.51H1.064A9.996 9.996 0 000 10c0 1.614.386 3.14 1.064 4.49l3.34-2.59z" fill="#FBBC05"/>
-            <path d="M10 3.977c1.468 0 2.786.505 3.823 1.496l2.868-2.868C14.959.99 12.695 0 10 0 6.09 0 2.71 2.24 1.064 5.11l3.34 2.59C5.19 5.736 7.395 3.977 10 3.977z" fill="#EA4335"/>
-          </svg>
-          {isLoading ? 'Signing up...' : 'Sign up with Google'}
-        </button>
-
-        <hr className="hr1" />
-
-        <p>
-          Already have an account?{" "}
-          <Link className="link" href="/auth/login">
-            Login
+    <div className="min-h-screen bg-brand-background flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="flex justify-center mb-6">
+          <div className="w-12 h-12 bg-brand-primary rounded-xl flex items-center justify-center text-white">
+            <Bot size={28} />
+          </div>
+        </div>
+        <h2 className="text-center text-3xl font-bold text-brand-text">
+          Create your account
+        </h2>
+        <p className="mt-2 text-center text-sm text-brand-textLight">
+          Already have an account?{' '}
+          <Link href="/auth/login" className="font-medium text-brand-primary hover:text-brand-primaryHover">
+            Sign in
           </Link>
         </p>
+      </div>
+
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <Card>
+          <form
+            className="space-y-6"
+            onSubmit={handleSubmit}
+          >
+            <div className="grid grid-cols-2 gap-4">
+              <Input 
+                label="First name" 
+                type="text" 
+                name="firstName"
+                required 
+                value={form.firstName}
+                onChange={handleForm}
+              />
+              <Input 
+                label="Last name" 
+                type="text" 
+                name="lastName"
+                required 
+                value={form.lastName}
+                onChange={handleForm}
+              />
+            </div>
+
+            <Input
+              label="Email address"
+              type="email"
+              name="email"
+              autoComplete="email"
+              required
+              placeholder="you@company.com"
+              value={form.email}
+              onChange={handleForm}
+            />
+
+            <Input
+              label="Password"
+              type="password"
+              name="password"
+              required
+              helperText="Must be at least 8 characters"
+              value={form.password}
+              onChange={handleForm}
+            />
+
+            <Button fullWidth type="submit" isLoading={isLoading}>
+              Create Account
+            </Button>
+          </form>
+
+          <div className="mt-6">
+            <div className="relative">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-gray-300" />
+              </div>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-2 bg-white text-gray-500">
+                  Or sign up with
+                </span>
+              </div>
+            </div>
+
+            <div className="mt-6">
+              <Button
+                fullWidth
+                variant="secondary"
+                onClick={handleGoogleSignUp}
+                disabled={isLoading}
+              >
+                <svg className="h-5 w-5 mr-2" viewBox="0 0 24 24">
+                  <path
+                    d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
+                    fill="#4285F4"
+                  />
+                  <path
+                    d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"
+                    fill="#34A853"
+                  />
+                  <path
+                    d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z"
+                    fill="#FBBC05"
+                  />
+                  <path
+                    d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z"
+                    fill="#EA4335"
+                  />
+                </svg>
+                Google
+              </Button>
+            </div>
+          </div>
+        </Card>
       </div>
     </div>
   );

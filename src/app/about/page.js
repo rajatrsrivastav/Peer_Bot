@@ -1,80 +1,102 @@
 "use client"
-import "./about.css"
-import { AuthContext } from "@/context/auth"
-import { useContext } from "react"
+import { Card } from '../../components/ui/Card'
+import { CheckCircle } from 'lucide-react'
+import { Footer } from '../../components/Footer'
 
 const About = () => {
-    const { isLoggedIn, setIsLoggedIn } = useContext(AuthContext)
-
   return (
-    <div className="about-container">
-      {/* <section className="about-hero">
-        <h1>About PeerBot</h1>
-        <p>Your AI-powered assistant platform for instant guidance and support</p>
-      </section> */}
-
-      <section className="about-mission">
-        <div className="about-mission-content">
-          <h2>Our Mission</h2>
-          <p>
-            PeerBot was created to democratize access to guidance and support. We believe that everyone—from junior
-            employees and interns to solo entrepreneurs—should have instant access to the help they need, when they need
-            it.
-          </p>
-          <p>
-            Our platform enables anyone to create custom AI assistants tailored to specific needs, workflows, and
-            knowledge domains, making expertise accessible to all.
+    <div className="py-16 md:py-24 bg-brand-background min-h-screen">
+      <div className="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="text-center mb-16">
+          <h1 className="text-4xl font-bold text-brand-text mb-6">
+            About PeerBot
+          </h1>
+          <p className="text-xl text-brand-textLight">
+            We&apos;re on a mission to make organizational knowledge accessible,
+            accurate, and instant.
           </p>
         </div>
-      </section>
-      <section className="about-how-it-works">
-        <h2>How PeerBot Works</h2>
-        <div className="about-process">
-          <div className="about-process-step">
-            <div className="about-step-number">1</div>
-            <div className="about-step-content">
-              <h3>Create Your Bot</h3>
-              <p>Define your bot purpose and provide context about what it should know and how it should respond.</p>
-            </div>
-          </div>
-          <div className="about-process-step">
-            <div className="about-step-number">2</div>
-            <div className="about-step-content">
-              <h3>Instant Deployment</h3>
-              <p>Your bot is immediately available for use—no complex setup or training required.</p>
-            </div>
-          </div>
-          <div className="about-process-step">
-            <div className="about-step-number">3</div>
-            <div className="about-step-content">
-              <h3>Get Guidance</h3>
-              <p>
-                Start chatting with your bot to get instant, personalized assistance based on the context you provided.
-              </p>
-            </div>
-          </div>
-          <div className="about-process-step">
-            <div className="about-step-number">4</div>
-            <div className="about-step-content">
-              <h3>Share & Collaborate</h3>
-              <p>Share your bots with others who need similar guidance or explore bots created by the community.</p>
-            </div>
-          </div>
-        </div>
-      </section>
 
-      <section className="about-cta">
-        <h2>Ready to experience PeerBot?</h2>
-        <p>Create your first AI assistant in minutes and start getting the guidance you need.</p>
-        <div className="about-cta-buttons">
-          <a href={isLoggedIn ? "/dashboard" : "/auth/signup"} className="about-primary-button">
-            Get Started
-          </a>
-          <a href="/explore" className="about-secondary-button">
-            Explore Bots
-          </a>
+        <div className="space-y-12">
+          <section>
+            <h2 className="text-2xl font-bold text-brand-text mb-4">
+              The Problem
+            </h2>
+            <p className="text-brand-textLight leading-relaxed mb-6">
+              In modern companies, knowledge is scattered across Google Drive,
+              Notion, Slack, and PDFs. New employees struggle to find basic
+              information, and senior staff spend hours answering repetitive
+              questions. This &quot;knowledge silo&quot; problem slows down onboarding and
+              reduces overall productivity.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-bold text-brand-text mb-4">
+              Our Solution
+            </h2>
+            <p className="text-brand-textLight leading-relaxed mb-6">
+              PeerBot is a secure, RAG-powered AI platform that connects to your
+              internal documents. It creates specialized chatbots that answer
+              questions based strictly on your company&apos;s context. No
+              hallucinations, no general internet answers—just precise
+              information from your own knowledge base.
+            </p>
+          </section>
+
+          <section>
+            <h2 className="text-2xl font-bold text-brand-text mb-6">
+              Key Use Cases
+            </h2>
+            <div className="grid gap-6">
+              <Card className="flex gap-4">
+                <div className="flex-shrink-0 mt-1">
+                  <CheckCircle className="w-6 h-6 text-brand-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-brand-text mb-2">
+                    Employee Onboarding
+                  </h3>
+                  <p className="text-brand-textLight text-sm">
+                    &quot;How do I set up my VPN?&quot; &quot;What is the expense policy?&quot; New
+                    hires get instant answers without waiting for HR.
+                  </p>
+                </div>
+              </Card>
+              <Card className="flex gap-4">
+                <div className="flex-shrink-0 mt-1">
+                  <CheckCircle className="w-6 h-6 text-brand-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-brand-text mb-2">
+                    Technical Support
+                  </h3>
+                  <p className="text-brand-textLight text-sm">
+                    Upload API documentation and engineering guides. Developers
+                    can query the bot for code snippets and architecture
+                    details.
+                  </p>
+                </div>
+              </Card>
+              <Card className="flex gap-4">
+                <div className="flex-shrink-0 mt-1">
+                  <CheckCircle className="w-6 h-6 text-brand-primary" />
+                </div>
+                <div>
+                  <h3 className="font-semibold text-brand-text mb-2">
+                    Sales Enablement
+                  </h3>
+                  <p className="text-brand-textLight text-sm">
+                    Give sales teams instant access to product specs, pricing
+                    sheets, and competitive analysis during calls.
+                  </p>
+                </div>
+              </Card>
+            </div>
+          </section>
         </div>
-      </section>
+      </div>
+      <Footer />
     </div>
   )
 }

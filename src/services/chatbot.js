@@ -1,10 +1,13 @@
 export const getChatBots=async({token})=>{
-    const response =await fetch("api/chatbot/getByCreator",{
+    const headers = {
+        "Content-Type":"application/json",
+    }
+    if (token) {
+        headers.Authorization = `Bearer ${token}`
+    }
+    const response =await fetch("/api/chatbot/getByCreator",{
         method:"GET",
-        headers:{
-            "Content-Type":"application/json",
-            Authorization:`Bearer ${token}`,
-        },
+        headers,
     })
     if(!response.ok){
         const{err}=await response.json()
@@ -14,14 +17,17 @@ export const getChatBots=async({token})=>{
     return response.json()
 }
 export const createChatBot = async({name,context,token}) => {
-    const response =await fetch("api/chatbot/create",
+    const headers = {
+        "Content-Type":'application/json',
+    }
+    if (token) {
+        headers.Authorization = `Bearer ${token}`
+    }
+    const response =await fetch("/api/chatbot/create",
         {
             method:"POST",
             body:JSON.stringify({name,context}),
-            headers:{
-                "Context-Type":'application/json',
-                Authorization :`Bearer ${token}`, 
-            },
+            headers,
         }
     )
     if (!response.ok){
@@ -32,12 +38,15 @@ export const createChatBot = async({name,context,token}) => {
   return response
 }
 export const getChatbotByName = async ({ name, token }) => {
+    const headers = {
+        "Content-Type": "application/json",
+    }
+    if (token) {
+        headers.Authorization = `Bearer ${token}`
+    }
     const response = await fetch(`/api/chatbot/getByChatbotName?name=${name}`, {
       method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`,
-      },
+      headers,
     });
     if (!response.ok) {
       const { err } = await response.json();

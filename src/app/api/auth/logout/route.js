@@ -6,7 +6,20 @@ export async function POST(req) {
   try {
     const { token } = await req.json();
 
-    await Token.deleteOne({ token });
+    if (!token) {
+      return new Response(JSON.stringify({ err: "Token is required" }), {
+        status: 400,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
+
+    // Delete the token from database
+    const result = await Token.deleteOne({ token });
+
+    if (result.deletedCount === 0) {
+      console.warn(`Token not found in database: ${token.substring(0, 20)}...`);
+      // Still return success since the user wants to logout
+    }
 
     return new Response(
       JSON.stringify({ message: "User logged out successfully" }),

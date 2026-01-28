@@ -66,9 +66,10 @@
   
   .chatbot-user-message .chatbot-message-content {
     background-color: #6c5ce7;
-    color: white;
+    color: #ffffff;
     border-bottom-right-radius: 4px;
     box-shadow: 0 2px 4px rgba(0,0,0,0.15);
+    font-weight: 500;
   }
   
   .chatbot-bot-message .chatbot-message-content {
@@ -79,6 +80,7 @@
   
   .chatbot-message-content p {
     margin: 0;
+    color: inherit;
   }
   
   .chatbot-typing-indicator {
