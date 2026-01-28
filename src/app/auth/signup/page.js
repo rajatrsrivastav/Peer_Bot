@@ -23,14 +23,12 @@ function Signup() {
     password: "",
   });
 
-  // Redirect to dashboard if already authenticated via Google
   useEffect(() => {
     if (status === 'authenticated' && session) {
       router.push('/dashboard');
     }
   }, [status, session, router]);
 
-  // Check for errors from OAuth callback
   useEffect(() => {
     const error = searchParams.get('error');
     if (error) {
@@ -76,7 +74,6 @@ function Signup() {
   const handleGoogleSignUp = async () => {
     try {
       setIsLoading(true);
-      // This will redirect to Google OAuth, create user in DB, and redirect to /dashboard
       await signIn('google', { 
         callbackUrl: '/dashboard',
         redirect: true 
@@ -88,7 +85,6 @@ function Signup() {
     }
   };
 
-  // Show loading state while checking authentication
   if (status === 'loading') {
     return (
       <div className="min-h-screen bg-brand-background flex flex-col justify-center py-12 sm:px-6 lg:px-8" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>

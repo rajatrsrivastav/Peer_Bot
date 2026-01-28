@@ -13,12 +13,10 @@ export async function POST(req) {
       });
     }
 
-    // Delete the token from database
     const result = await Token.deleteOne({ token });
 
     if (result.deletedCount === 0) {
       console.warn(`Token not found in database: ${token.substring(0, 20)}...`);
-      // Still return success since the user wants to logout
     }
 
     return new Response(

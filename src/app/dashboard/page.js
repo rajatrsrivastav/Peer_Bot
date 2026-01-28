@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation"
 
 import { AuthContext } from "@/context/auth"
 import { ChatbotContext } from "@/context/chatbot"
-import { createChatBot, getChatBots } from "@/services/chatbot"
+import { createChatBot, getChatBots, deleteChatBot, updateChatBot } from "@/services/chatbot"
 import { getToken } from "@/helpers/auth"
 import { useAuth } from "@/hooks/useAuth"
 import PrivateRoute from "@/components/PrivateRoute"
@@ -33,6 +33,10 @@ const Dashboard = () => {
   const [isCreating, setIsCreating] = useState(false)
   const [searchTerm, setSearchTerm] = useState("")
   const [isModalOpen, setIsModalOpen] = useState(false)
+  const [dropdownOpen, setDropdownOpen] = useState(null)
+  const [isUpdateModalOpen, setIsUpdateModalOpen] = useState(false)
+  const [updateBotData, setUpdateBotData] = useState({ originalName: "", name: "", context: "" })
+  const [isUpdating, setIsUpdating] = useState(false)
   const router = useRouter()
   const { authMethod } = useAuth()
 
@@ -49,6 +53,14 @@ const Dashboard = () => {
         setIsLoading(false)
       })
   }, [setChatbots, authMethod])
+
+  useEffect(() => {
+    const handleClickOutside = () => setDropdownOpen(null)
+    if (dropdownOpen !== null) {
+      document.addEventListener('click', handleClickOutside)
+      return () => document.removeEventListener('click', handleClickOutside)
+    }
+  }, [dropdownOpen])
 
   const handleAddBot = async () => {
     if (botName.trim() === "" || botContext.trim() === "" || isCreating) return
@@ -68,6 +80,57 @@ const Dashboard = () => {
       alert("Failed to create bot. Please try again.")
     } finally {
       setIsCreating(false)
+    }
+  }
+
+  const handleDeleteBot = async (botName) => {
+    if (!window.confirm(`Are you sure you want to delete "${botName}"?`)) return
+    
+    try {
+      const token = authMethod === 'custom' ? getToken() : null
+      await deleteChatBot({ name: botName, token })
+      setChatbots((prev) => prev.filter(bot => bot.name !== botName))
+      alert('Bot deleted successfully')
+    } catch (error) {
+      console.error('Failed to delete bot:', error)
+      alert(error.message || 'Failed to delete bot. Please try again.')
+    }
+  }
+
+  const handleUpdateBot = (bot) => {
+    setUpdateBotData({ originalName: bot.name, name: bot.name, context: bot.context })
+    setIsUpdateModalOpen(true)
+  }
+
+  const handleUpdateBotSubmit = async () => {
+    if (updateBotData.name.trim() === "" || updateBotData.context.trim() === "" || isUpdating) return
+
+    setIsUpdating(true)
+    try {
+      const token = authMethod === 'custom' ? getToken() : null
+      await updateChatBot({ 
+        name: updateBotData.originalName, 
+        newName: updateBotData.name, 
+        context: updateBotData.context, 
+        token 
+      })
+      
+      setChatbots((prev) => 
+        prev.map(bot => 
+          bot.name === updateBotData.originalName 
+            ? { ...bot, name: updateBotData.name, context: updateBotData.context }
+            : bot
+        )
+      )
+      
+      setIsUpdateModalOpen(false)
+      setUpdateBotData({ originalName: "", name: "", context: "" })
+      alert('Bot updated successfully')
+    } catch (error) {
+      console.error('Failed to update bot:', error)
+      alert(error.message || 'Failed to update bot. Please try again.')
+    } finally {
+      setIsUpdating(false)
     }
   }
 
@@ -135,9 +198,43 @@ const Dashboard = () => {
                     <div className="p-2 bg-brand-primary/10 rounded-lg">
                       <BotIcon className="w-5 h-5 text-brand-primary" />
                     </div>
-                    <button className="text-gray-400 hover:text-gray-600">
-                      <MoreVertical className="w-4 h-4" />
-                    </button>
+                    <div className="relative">
+                      <button 
+                        onClick={(e) => {
+                          e.stopPropagation()
+                          setDropdownOpen(dropdownOpen === index ? null : index)
+                        }}
+                        className="text-gray-400 hover:text-gray-600"
+                      >
+                        <MoreVertical className="w-4 h-4" />
+                      </button>
+                      {dropdownOpen === index && (
+                        <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 z-10">
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleUpdateBot(bot)
+                              setDropdownOpen(null)
+                            }}
+                            className="w-full text-left px-4 py-2 text-sm text-gray-700 hover:bg-gray-100 rounded-t-lg flex items-center gap-2"
+                          >
+                            <Settings className="w-4 h-4" />
+                            Update Bot
+                          </button>
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation()
+                              handleDeleteBot(bot.name)
+                              setDropdownOpen(null)
+                            }}
+                            className="w-full text-left px-4 py-2 text-sm text-red-600 hover:bg-red-50 rounded-b-lg flex items-center gap-2"
+                          >
+                            <Trash2 className="w-4 h-4" />
+                            Delete Bot
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   <h3 className="text-lg font-bold text-brand-text mb-1">
@@ -210,7 +307,7 @@ const Dashboard = () => {
             Recent Activity
           </h2>
           <Card noPadding>
-            <div className="divide-y divide-brand-border">
+            {/* <div className="divide-y divide-brand-border">
               {[1, 2, 3].map((i) => (
                 <div
                   key={i}
@@ -237,7 +334,7 @@ const Dashboard = () => {
                   </Button>
                 </div>
               ))}
-            </div>
+            </div> */}
           </Card>
         </div>
       </div>
@@ -273,6 +370,43 @@ const Dashboard = () => {
               </Button>
               <Button onClick={handleAddBot} isLoading={isCreating}>
                 Create Chatbot
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Update Bot Modal */}
+      {isUpdateModalOpen && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50" onClick={() => setIsUpdateModalOpen(false)}>
+          <div className="bg-white rounded-lg p-6 w-full max-w-md mx-4" onClick={(e) => e.stopPropagation()}>
+            <h3 className="font-bold text-lg mb-4">Update Chatbot</h3>
+            <div className="space-y-4">
+              <Input
+                label="Bot Name"
+                value={updateBotData.name}
+                onChange={(e) => setUpdateBotData({ ...updateBotData, name: e.target.value })}
+                placeholder="Enter a name for your chatbot"
+              />
+              <div>
+                <label className="block text-sm font-medium text-brand-textLight mb-1.5">
+                  Bot Context
+                </label>
+                <textarea
+                  value={updateBotData.context}
+                  onChange={(e) => setUpdateBotData({ ...updateBotData, context: e.target.value })}
+                  placeholder="Describe what your chatbot should know and how it should respond"
+                  rows={5}
+                  className="w-full px-3 py-2 bg-white border border-brand-border rounded-lg text-sm transition-colors focus:outline-none focus:ring-2 focus:ring-brand-primary/20 focus:border-brand-primary"
+                />
+              </div>
+            </div>
+            <div className="flex justify-end gap-2 mt-6">
+              <Button variant="secondary" onClick={() => setIsUpdateModalOpen(false)}>
+                Cancel
+              </Button>
+              <Button onClick={handleUpdateBotSubmit} isLoading={isUpdating}>
+                Update Chatbot
               </Button>
             </div>
           </div>

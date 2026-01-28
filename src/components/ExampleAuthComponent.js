@@ -1,4 +1,3 @@
-// Example of how to use NextAuth in your components
 
 'use client'
 
@@ -32,7 +31,6 @@ export default function ExampleAuthComponent() {
     )
 }
 
-// You can also use it in server components
 // import { getServerSession } from 'next-auth'
 // import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 // 

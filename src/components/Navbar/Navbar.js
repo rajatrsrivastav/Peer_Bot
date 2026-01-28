@@ -19,12 +19,10 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false)
   const [isUserDropdownOpen, setIsUserDropdownOpen] = useState(false)
 
-  // User is authenticated if they have either NextAuth session or custom auth token
   const isAuthenticated = session || isLoggedIn
 
   const [userData, setUserData] = useState({ name: 'User', email: '', image: null })
 
-  // Update user data when session or auth state changes
   useEffect(() => {
     const updateUserData = () => {
       if (session?.user) {
@@ -51,12 +49,10 @@ const Navbar = () => {
     updateUserData()
   }, [session, isLoggedIn])
 
-  // Close mobile nav on route change
   useEffect(() => {
     setIsMenuOpen(false)
   }, [pathname])
 
-  // Close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (isUserDropdownOpen && !event.target.closest('.user-dropdown')) {
@@ -72,20 +68,17 @@ const Navbar = () => {
 
   async function handleLogout() {
     try {
-      // Handle NextAuth signout
       if (session) {
         await signOut({ callbackUrl: '/auth/login' })
         return
       }
       
-      // Handle custom auth logout
       const token = getToken()
       if (token) {
         const response = await logout({ token })
         const { message } = await response.json()
         console.log('Logout successful:', message)
         
-        // Clear all stored data
         destroyToken()
         if (typeof window !== 'undefined') {
           localStorage.removeItem('userData')
@@ -94,7 +87,6 @@ const Navbar = () => {
         setIsLoggedIn(false)
         router.push("/auth/login")
       } else {
-        // No token found, just clear local state
         if (typeof window !== 'undefined') {
           localStorage.removeItem('userData')
         }
@@ -104,7 +96,6 @@ const Navbar = () => {
       }
     } catch (err) {
       console.error('Logout error:', err)
-      // Even if logout fails, clear local state and redirect
       if (typeof window !== 'undefined') {
         localStorage.removeItem('userData')
       }
@@ -218,7 +209,6 @@ const Navbar = () => {
                     
                     <button
                       onClick={() => {
-                        // TODO: Add profile/settings page
                         setIsUserDropdownOpen(false)
                       }}
                       className="w-full text-left px-4 py-2 text-sm text-brand-textLight hover:bg-gray-50 hover:text-brand-text transition-colors"
@@ -228,7 +218,6 @@ const Navbar = () => {
                     
                     <button
                       onClick={() => {
-                        // TODO: Add billing/subscription page
                         setIsUserDropdownOpen(false)
                       }}
                       className="w-full text-left px-4 py-2 text-sm text-brand-textLight hover:bg-gray-50 hover:text-brand-text transition-colors"
@@ -238,7 +227,6 @@ const Navbar = () => {
                     
                     <button
                       onClick={() => {
-                        // TODO: Add support page
                         setIsUserDropdownOpen(false)
                       }}
                       className="w-full text-left px-4 py-2 text-sm text-brand-textLight hover:bg-gray-50 hover:text-brand-text transition-colors"

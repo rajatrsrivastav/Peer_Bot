@@ -14,7 +14,6 @@ export const createConnection = () => {
     .catch((error) => console.log("❌ Error connecting to MongoDB:", error));
 }
 
-// Only auto-connect in production
 if (process.env.NODE_ENV === 'production') {
   createConnection();
 }

@@ -21,7 +21,7 @@ export function CTASection() {
             <h2 className="text-3xl md:text-4xl font-bold text-white mb-6">
               Ready to streamline your internal knowledge?
             </h2>
-            <p className="text-lg text-gray-300 mb-10">
+            <p className="text-lg text-gray-100 mb-10">
               Join forward-thinking companies using PeerBot to empower their
               teams with instant answers.
             </p>
