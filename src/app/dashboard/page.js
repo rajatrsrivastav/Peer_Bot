@@ -45,11 +45,17 @@ const Dashboard = () => {
     const token = authMethod === 'custom' ? getToken() : null
     getChatBots({ token })
       .then((res) => {
-        setChatbots(res)
+        if (res && res.error) {
+          console.warn('getChatBots error:', res.error)
+          setChatbots([])
+        } else {
+          setChatbots(res || [])
+        }
         setIsLoading(false)
       })
       .catch(err => {
         console.error(err)
+        setChatbots([])
         setIsLoading(false)
       })
   }, [setChatbots, authMethod])

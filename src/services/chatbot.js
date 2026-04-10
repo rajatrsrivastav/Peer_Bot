@@ -12,7 +12,7 @@ export const getChatBots=async({token})=>{
     if(!response.ok){
         const{err}=await response.json()
         console.log(err)
-        throw new Error(err || "Error getting chatbot")
+        return { error: err || "Error getting chatbot" }
     }
     return response.json()
 }
