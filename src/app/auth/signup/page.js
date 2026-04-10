@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
+import { z } from "zod";
 import { Card } from "@/components/ui/Card"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
@@ -22,6 +23,8 @@ function Signup() {
     email: "",
     password: "",
   });
+  const [passwordError, setPasswordError] = useState("");
+  const [serverError, setServerError] = useState("");
 
   useEffect(() => {
     if (status === 'authenticated' && session) {
@@ -47,12 +50,26 @@ function Signup() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     if (isLoading) return;
+    setServerError("");
     
     try {
       if (!form.firstName || !form.lastName || !form.email || !form.password) {
         alert("Please fill all fields!");
         return;
       }
+
+      const signupSchema = z.object({
+        password: z.string().min(8, "Password must be at least 8 characters long"),
+      });
+
+      const validationResult = signupSchema.safeParse({ password: form.password });
+      if (!validationResult.success) {
+        const errorMsg = validationResult.error?.errors?.[0]?.message || "Password must be at least 8 characters long";
+        setPasswordError(errorMsg);
+        return;
+      }
+
+      setPasswordError("");
       setIsLoading(true);
       const signupForm = {
         name: `${form.firstName} ${form.lastName}`,
@@ -64,8 +81,7 @@ function Signup() {
       alert(data.message);
       router.push("/auth/login");
     } catch (err) {
-      console.error(err);
-      alert("Signup failed. Please try again.");
+      setServerError(err?.message || "Signup failed. Please try again.");
     } finally {
       setIsLoading(false);
     }
@@ -79,8 +95,7 @@ function Signup() {
         redirect: true 
       });
     } catch (error) {
-      console.error('Google sign-up error:', error);
-      alert('Failed to sign up with Google');
+      setServerError('Failed to sign up with Google');
       setIsLoading(false);
     }
   };
@@ -114,6 +129,9 @@ function Signup() {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <Card>
+          {serverError && (
+            <div className="mb-4 text-sm text-red-600">{serverError}</div>
+          )}
           <form
             className="space-y-6"
             onSubmit={handleSubmit}
@@ -154,6 +172,7 @@ function Signup() {
               name="password"
               required
               helperText="Must be at least 8 characters"
+              error={passwordError}
               value={form.password}
               onChange={handleForm}
             />

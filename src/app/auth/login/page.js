@@ -4,6 +4,7 @@ import { useContext, useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import { signIn, useSession } from "next-auth/react";
+import { z } from "zod";
 import { Card } from "@/components/ui/Card"
 import { Button } from "@/components/ui/Button"
 import { Input } from "@/components/ui/Input"
@@ -22,6 +23,8 @@ function Login() {
     email: "",
     password: "",
   });
+  const [passwordError, setPasswordError] = useState("");
+  const [serverError, setServerError] = useState("");
 
   useEffect(() => {
     if (status === 'authenticated' && session) {
@@ -48,6 +51,20 @@ function Login() {
     try {
       e.preventDefault();
       if (isLoading) return; 
+      setServerError("");
+
+      const loginSchema = z.object({
+        password: z.string().min(8, "Password must be at least 8 characters long"),
+      });
+
+      const validationResult = loginSchema.safeParse({ password: form.password });
+      if (!validationResult.success) {
+        const errorMsg = validationResult.error?.errors?.[0]?.message || "Password must be at least 8 characters long";
+        setPasswordError(errorMsg);
+        return;
+      }
+
+      setPasswordError("");
       setIsLoading(true);
       const response = await login(form);
       const {
@@ -60,14 +77,13 @@ function Login() {
         const { user } = await profileResponse.json();
         localStorage.setItem("userData", JSON.stringify(user));
       } catch (profileErr) {
-        console.log("Failed to fetch profile:", profileErr);
+        // profile fetch failed; ignore silently
       }
       
       setIsLoggedIn(true);
       router.push("/dashboard");
     } catch (err) {
-      alert(err);
-      console.log(err);
+      setServerError(err?.message || String(err) || "Login failed");
     } finally {
       setIsLoading(false);
     }
@@ -81,8 +97,7 @@ function Login() {
         redirect: true 
       });
     } catch (error) {
-      console.error('Google sign-in error:', error);
-      alert('Failed to sign in with Google');
+      setServerError('Failed to sign in with Google');
       setIsLoading(false);
     }
   };
@@ -116,6 +131,9 @@ function Login() {
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <Card>
+          {serverError && (
+            <div className="mb-4 text-sm text-red-600">{serverError}</div>
+          )}
           <form
             className="space-y-6"
             onSubmit={handleSubmit}
@@ -137,6 +155,7 @@ function Login() {
               name="password"
               autoComplete="current-password"
               required
+              error={passwordError}
               value={form.password}
               onChange={handleForm}
             />

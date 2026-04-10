@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export function Footer() {
   return (
     <footer className="bg-white border-t border-brand-border py-12">
@@ -12,15 +14,15 @@ export function Footer() {
           © 2024 PeerBot Inc. All rights reserved.
         </div>
         <div className="flex gap-6 text-sm text-brand-textLight">
-          <a href="#" className="hover:text-brand-primary">
+          <Link href="/privacy" className="hover:text-brand-primary">
             Privacy
-          </a>
-          <a href="#" className="hover:text-brand-primary">
+          </Link>
+          <Link href="/terms" className="hover:text-brand-primary">
             Terms
-          </a>
-          <a href="#" className="hover:text-brand-primary">
+          </Link>
+          <Link href="/contact" className="hover:text-brand-primary">
             Contact
-          </a>
+          </Link>
         </div>
       </div>
     </footer>

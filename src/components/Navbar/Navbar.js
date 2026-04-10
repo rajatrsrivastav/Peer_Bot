@@ -209,6 +209,7 @@ const Navbar = () => {
                     
                     <button
                       onClick={() => {
+                        handleNav('/profile')
                         setIsUserDropdownOpen(false)
                       }}
                       className="w-full text-left px-4 py-2 text-sm text-brand-textLight hover:bg-gray-50 hover:text-brand-text transition-colors"
@@ -218,6 +219,7 @@ const Navbar = () => {
                     
                     <button
                       onClick={() => {
+                        handleNav('/billing')
                         setIsUserDropdownOpen(false)
                       }}
                       className="w-full text-left px-4 py-2 text-sm text-brand-textLight hover:bg-gray-50 hover:text-brand-text transition-colors"
