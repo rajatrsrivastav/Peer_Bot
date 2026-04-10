@@ -19,12 +19,18 @@ function ChatbotPage() {
   const messagesEndRef = useRef(null)
 
   useEffect(() => {
-    if (!ChatBotName) return
-    const token = getToken()
-    getChatbotByName({ token, name: ChatBotName }).then((data) => {
-      setBotDetails({ name: data.name, context: data.context })
-    })
-  }, [ChatBotName])
+    const fetchBot = async () => {
+      const token = getToken();
+      const decodedName = decodeURIComponent(ChatBotName);
+      const result = await getChatbotByName({ token, name: decodedName });
+      if (result.error) {
+        setBotDetails({ name: decodedName, context: "" });
+        return;
+      }
+      setBotDetails({ name: result.name, context: result.context });
+    };
+    if (ChatBotName) fetchBot();
+  }, [ChatBotName]);
 
   useEffect(() => {
     messagesEndRef?.current?.scrollIntoView({ behavior: "smooth" })
@@ -41,13 +47,21 @@ function ChatbotPage() {
     setMessage("")
     
     try {
+      const urlDebug = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("debug") === "true";
+      const envDebug = process.env.NEXT_PUBLIC_GEMINI_DEBUG === "true";
+      const debug = urlDebug || envDebug;
+
       const data = await askGemini({
         text: userMessage,
         context: botDetails.context,
+        debug,
       })
       let botMessage = "";
       if (data?.reply) {
         botMessage = data.reply;
+      } else if (data?.providerError) {
+        const providerMsg = data.providerError?.error?.message || data.providerError?.message || JSON.stringify(data.providerError);
+        botMessage = `Provider${data.providerStatus ? ` (${data.providerStatus})` : ""}: ${providerMsg}`;
       } else if (data?.response?.candidates?.[0]?.content?.parts?.[0]?.text) {
         botMessage = data.response.candidates[0].content.parts[0].text;
       } else {
@@ -55,7 +69,6 @@ function ChatbotPage() {
       }
       setChatHistory(prev => [...prev, { role: "Bot", text: botMessage }])
     } catch (error) {
-      console.error("Error getting response:", error)
       setChatHistory(prev => [...prev, { role: "Bot", text: "Sorry, I encountered an error. Please try again." }])
     } finally {
       setIsTyping(false)

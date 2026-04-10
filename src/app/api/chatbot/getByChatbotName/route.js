@@ -1,23 +1,9 @@
-import { getChatbotByName, verifyToken } from "../../utils";
-import { auth } from "@/app/api/auth/[...nextauth]/route";
+import { getChatbotByName } from "../../utils";
+
+export const dynamic = "force-dynamic";
 
 export async function GET(req) {
   try {
-    const session = await auth();
-    const isAuthenticated = !!session?.user?.email;
-
-    if (!isAuthenticated) {
-      const authHeader = req.headers.get("authorization");
-      const accessToken = authHeader?.split(" ")[1];
-
-      if (!accessToken || !(await verifyToken(accessToken))) {
-        return new Response(JSON.stringify({ err: "Unauthorized" }), {
-          status: 401,
-          headers: { "Content-Type": "application/json" },
-        });
-      }
-    }
-
     const { searchParams } = new URL(req.url);
     const name = searchParams.get("name");
 
@@ -29,6 +15,13 @@ export async function GET(req) {
     }
 
     const data = await getChatbotByName(name);
+
+    if (!data) {
+      return new Response(JSON.stringify({ err: "Chatbot not found" }), {
+        status: 404,
+        headers: { "Content-Type": "application/json" },
+      });
+    }
 
     return new Response(JSON.stringify(data), {
       status: 200,

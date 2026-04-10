@@ -44,16 +44,17 @@ export const getChatbotByName = async ({ name, token }) => {
     if (token) {
         headers.Authorization = `Bearer ${token}`
     }
-    const response = await fetch(`/api/chatbot/getByChatbotName?name=${name}`, {
+    const response = await fetch(`/api/chatbot/getByChatbotName?name=${encodeURIComponent(name)}`, {
       method: "GET",
       headers,
     });
     if (!response.ok) {
       const { err } = await response.json();
       console.log(err);
-      throw new Error(err || "Error getting chatbot");
+      return { error: err || "Error getting chatbot" };
     }
-    return response.json();
+    const data = await response.json();
+    return data;
   };
 
 export const deleteChatBot = async ({ name, token }) => {
