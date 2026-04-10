@@ -24,12 +24,14 @@ export async function POST(request) {
 
         const data = await response.json();
 
-        return new Response(JSON.stringify({ response: data }), {
-            status: 201,
-            headers: {
-                "Content-Type": "application/json",
-            },
-        });
+        if (!response.ok) {
+            return new Response(JSON.stringify({ error: data.error.message }), {
+                status: response.status,
+                headers: {
+                    "Content-Type": "application/json",
+                },
+            });
+        }
 
     } catch (err) {
         console.error("Error in POST handler:", err);
