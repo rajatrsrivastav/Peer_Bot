@@ -2,6 +2,7 @@
 'use client'
 
 import { useSession, signIn, signOut } from 'next-auth/react'
+import Image from 'next/image'
 
 export default function ExampleAuthComponent() {
     const { data: session, status } = useSession()
@@ -16,7 +17,7 @@ export default function ExampleAuthComponent() {
                 <p>Signed in as {session.user.email}</p>
                 <p>Name: {session.user.name}</p>
                 {session.user.image && (
-                    <img src={session.user.image} alt="Profile" />
+                    <Image src={session.user.image} alt="Profile" width={48} height={48} />
                 )}
                 <button onClick={() => signOut()}>Sign out</button>
             </div>

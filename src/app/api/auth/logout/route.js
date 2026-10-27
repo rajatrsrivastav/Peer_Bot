@@ -1,9 +1,9 @@
 import { createConnection } from "@/config/db";
 import Token from "@/models/token";
-await createConnection();
 
 export async function POST(req) {
   try {
+    await createConnection();
     const { token } = await req.json();
 
     if (!token) {

@@ -61,7 +61,7 @@ const Explore = () => {
                     <Bot className="w-5 h-5" />
                   </div>
                   <span className="text-xs font-semibold uppercase tracking-wider text-brand-textLight bg-gray-100 px-2 py-1 rounded">
-                    Business
+                    Custom AI
                   </span>
                 </div>
 
@@ -74,10 +74,10 @@ const Explore = () => {
 
                 <div className="mt-auto pt-4 border-t border-brand-border flex justify-between items-center">
                   <span className="text-sm font-medium text-brand-textLight">
-                    Created by: user1
+                    Community chatbot
                   </span>
                   <Button
-                    onClick={() => router.push(`/chatbot/${bot.name}`)}
+                    onClick={() => router.push(`/chatbot/${encodeURIComponent(bot.name)}`)}
                     size="sm"
                   >
                     Try it

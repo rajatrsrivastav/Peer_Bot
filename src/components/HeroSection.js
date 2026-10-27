@@ -1,7 +1,7 @@
 "use client"
 import { Button } from './ui/Button'
 import { motion } from 'framer-motion'
-import { ArrowRight, ShieldCheck, FileText, Zap } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 
 export function HeroSection() {
   return (
@@ -21,27 +21,16 @@ export function HeroSection() {
               duration: 0.5,
             }}
           >
-            {/* <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-brand-primary/5 border border-brand-primary/10 text-brand-primary text-sm font-medium mb-8">
-              <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-primary opacity-75"></span>
-                <span className="relative inline-flex rounded-full h-2 w-2 bg-brand-primary"></span>
-              </span>
-              {/* New: Enterprise SSO Integration */}
-              New: Enterprise Integration
-
-            {/* </div>  */}
-
             <h1 className="text-4xl md:text-6xl font-bold text-brand-text tracking-tight mb-6 leading-tight">
-              Turn your company documents into{' '}
+              Turn your team knowledge into{' '}
               <span className="text-brand-primary">
                 intelligent AI assistants
               </span>
             </h1>
 
             <p className="text-xl text-brand-textLight mb-10 leading-relaxed max-w-2xl mx-auto">
-              Securely upload your internal knowledge base and instantly create
-              RAG-powered chatbots. Reduce dependency on senior staff and
-              streamline onboarding.
+              Add your own instructions and trusted context to create focused
+              AI chatbots for onboarding, support, and everyday questions.
             </p>
 
             <div className="flex flex-col sm:flex-row items-center justify-center gap-4">
@@ -63,20 +52,6 @@ export function HeroSection() {
               </Button>
             </div>
 
-            {/* <div className="mt-12 pt-8 border-t border-brand-border flex flex-wrap justify-center gap-x-12 gap-y-6 text-sm text-brand-textLight font-medium">
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="w-5 h-5 text-brand-primary" />
-                <span>SOC2 Compliant Security</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <FileText className="w-5 h-5 text-brand-primary" />
-                <span>Supports PDF, DOCX, Notion</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <Zap className="w-5 h-5 text-brand-primary" />
-                <span>Instant Deployment</span>
-              </div>
-            </div> */}
           </motion.div>
         </div>
       </div>

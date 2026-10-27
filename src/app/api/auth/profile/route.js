@@ -1,12 +1,10 @@
 import User from "@/models/user";
 import Token from "@/models/token";
 import { createConnection } from "@/config/db";
-import jwt from "jsonwebtoken";
-
-await createConnection();
 
 export async function GET(req) {
   try {
+    await createConnection();
     const authHeader = req.headers.get('authorization');
     if (!authHeader || !authHeader.startsWith('Bearer ')) {
       return new Response(JSON.stringify({ err: "No token provided" }), {

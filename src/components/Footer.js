@@ -11,17 +11,14 @@ export function Footer() {
           <span className="font-semibold text-brand-text">PeerBot</span>
         </div>
         <div className="text-sm text-brand-textLight">
-          © 2024 PeerBot Inc. All rights reserved.
+          © {new Date().getFullYear()} PeerBot Inc. All rights reserved.
         </div>
         <div className="flex gap-6 text-sm text-brand-textLight">
-          <Link href="/privacy" className="hover:text-brand-primary">
-            Privacy
+          <Link href="/about" className="hover:text-brand-primary">
+            About
           </Link>
-          <Link href="/terms" className="hover:text-brand-primary">
-            Terms
-          </Link>
-          <Link href="/contact" className="hover:text-brand-primary">
-            Contact
+          <Link href="/explore" className="hover:text-brand-primary">
+            Explore
           </Link>
         </div>
       </div>

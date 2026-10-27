@@ -3,9 +3,7 @@ import User from "@/models/user";
 import Token from "@/models/token";
 import { createConnection } from "@/config/db";
 import { z } from "zod";
-import jwt from "jsonwebtoken"
-await createConnection();
-
+import { randomUUID } from "node:crypto";
 const loginSchema = z.object({
   email: z.string().email(),
   password: z.string().min(8, "Password must be at least 8 characters long"),
@@ -13,11 +11,12 @@ const loginSchema = z.object({
 
 export async function POST(req) {
   try {
+    await createConnection();
     const body = await req.json();
     const result = loginSchema.safeParse({ email: body.email, password: body.password });
 
     if (!result.success) {
-      return new Response(JSON.stringify({ err: result.error.errors[0].message }), {
+      return new Response(JSON.stringify({ err: result.error.issues[0].message }), {
         status: 400,
         headers: { "Content-Type": "application/json" },
       });
@@ -58,7 +57,7 @@ export async function POST(req) {
 }
 
 const registerToken = async (email) => {
-  const token = new Date().toISOString() + "#@#" + email;
+  const token = randomUUID() + "#@#" + email;
   const newToken = new Token({ token });
   return newToken.save();
 };

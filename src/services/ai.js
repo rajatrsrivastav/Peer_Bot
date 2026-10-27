@@ -6,7 +6,12 @@ export const askGemini = async ({ text, context, debug } = {}) => {
 
   const response = await fetch("/api/ai/askGemini", {
     method: "POST",
-    body: JSON.stringify({ text, context, debug: useDebug }),
+    body: JSON.stringify({
+      text,
+      context,
+      debug: useDebug,
+      apiKey: typeof window !== "undefined" ? localStorage.getItem("geminiApiKey") : null,
+    }),
     headers: {
       "Content-Type": "application/json",
     },
@@ -33,5 +38,21 @@ export const askGemini = async ({ text, context, debug } = {}) => {
     };
   }
 
+  return data;
+};
+
+export const validateGeminiKey = async (apiKey) => {
+  const response = await fetch("/api/ai/askGemini", {
+    method: "POST",
+    body: JSON.stringify({ apiKey, validateOnly: true }),
+    headers: {
+      "Content-Type": "application/json",
+    },
+  });
+
+  const data = await response.json().catch(() => null);
+  if (!response.ok || !data?.valid) {
+    throw new Error(data?.error || "Unable to validate this Gemini API key");
+  }
   return data;
 };

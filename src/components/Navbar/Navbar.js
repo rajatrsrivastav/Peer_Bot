@@ -207,35 +207,6 @@ const Navbar = () => {
                       Dashboard
                     </button>
                     
-                    <button
-                      onClick={() => {
-                        handleNav('/profile')
-                        setIsUserDropdownOpen(false)
-                      }}
-                      className="w-full text-left px-4 py-2 text-sm text-brand-textLight hover:bg-gray-50 hover:text-brand-text transition-colors"
-                    >
-                      Profile & Settings
-                    </button>
-                    
-                    <button
-                      onClick={() => {
-                        handleNav('/billing')
-                        setIsUserDropdownOpen(false)
-                      }}
-                      className="w-full text-left px-4 py-2 text-sm text-brand-textLight hover:bg-gray-50 hover:text-brand-text transition-colors"
-                    >
-                      Billing & Subscription
-                    </button>
-                    
-                    <button
-                      onClick={() => {
-                        setIsUserDropdownOpen(false)
-                      }}
-                      className="w-full text-left px-4 py-2 text-sm text-brand-textLight hover:bg-gray-50 hover:text-brand-text transition-colors"
-                    >
-                      Support & Help
-                    </button>
-                    
                     <div className="border-t border-brand-border my-1"></div>
                     
                     <button

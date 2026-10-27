@@ -1,7 +1,4 @@
-import { createConnection } from "@/config/db";
 import { getAllChatBots } from "../../utils";
-
-createConnection();
 
 export async function GET(req) {
   try {

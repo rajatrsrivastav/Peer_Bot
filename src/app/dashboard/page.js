@@ -18,8 +18,6 @@ import {
   Plus,
   Search,
   MoreVertical,
-  FileText,
-  MessageSquare,
   Settings,
   Trash2,
   ExternalLink,
@@ -73,10 +71,10 @@ const Dashboard = () => {
 
     setIsCreating(true)
     try {
-      const newBot = { name: botName, context: botContext }
-      setChatbots((prev) => [...prev, newBot])
       const token = authMethod === 'custom' ? getToken() : null
       await createChatBot({ name: botName, context: botContext, token })
+      const newBot = { name: botName.trim(), context: botContext.trim() }
+      setChatbots((prev) => [...prev, newBot])
 
       setBotName("")
       setBotContext("")
@@ -156,7 +154,7 @@ const Dashboard = () => {
                 My Chatbots
               </h1>
               <p className="text-brand-textLight mt-1">
-                Manage your AI assistants and knowledge bases
+                Manage your AI assistants and custom knowledge
               </p>
             </div>
             <Button onClick={() => setIsModalOpen(true)}>
@@ -250,15 +248,7 @@ const Dashboard = () => {
                     {bot.context}
                   </p>
 
-                  <div className="mt-auto pt-4 border-t border-brand-border flex items-center justify-between text-xs text-gray-500">
-                    <div className="flex gap-3">
-                      <span className="flex items-center gap-1">
-                        <FileText className="w-3 h-3" /> 0 docs
-                      </span>
-                      <span className="flex items-center gap-1">
-                        <MessageSquare className="w-3 h-3" /> 0 chats
-                      </span>
-                    </div>
+                  <div className="mt-auto pt-4 border-t border-brand-border flex items-center justify-end text-xs text-gray-500">
                     <span
                       className="px-2 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-700"
                     >
@@ -272,6 +262,7 @@ const Dashboard = () => {
                       size="sm"
                       fullWidth
                       className="text-xs"
+                      onClick={() => handleUpdateBot(bot)}
                     >
                       <Settings className="w-3 h-3 mr-1" /> Manage
                     </Button>
@@ -280,7 +271,7 @@ const Dashboard = () => {
                       size="sm"
                       fullWidth
                       className="text-xs"
-                      onClick={() => router.push(`/chatbot/${bot.name}`)}
+                      onClick={() => router.push(`/chatbot/${encodeURIComponent(bot.name)}`)}
                     >
                       <ExternalLink className="w-3 h-3 mr-1" /> Chat
                     </Button>
@@ -300,49 +291,13 @@ const Dashboard = () => {
                   Create New Chatbot
                 </span>
                 <span className="text-sm text-gray-500 mt-1">
-                  Upload docs to get started
+                  Add custom knowledge to get started
                 </span>
               </button>
             </>
           )}
         </div>
 
-        {/* Recent Activity Section */}
-        <div className="mt-12">
-          <h2 className="text-lg font-bold text-brand-text mb-4">
-            Recent Activity
-          </h2>
-          <Card noPadding>
-            {/* <div className="divide-y divide-brand-border">
-              {[1, 2, 3].map((i) => (
-                <div
-                  key={i}
-                  className="p-4 flex items-center justify-between hover:bg-gray-50 transition-colors"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="w-8 h-8 rounded-full bg-gray-200 flex items-center justify-center text-xs font-medium text-gray-600">
-                      JD
-                    </div>
-                    <div>
-                      <p className="text-sm font-medium text-brand-text">
-                        John Doe updated{' '}
-                        <span className="text-brand-primary">
-                          Engineering Onboarding
-                        </span>
-                      </p>
-                      <p className="text-xs text-brand-textLight">
-                        Added &quot;AWS_Credentials.pdf&quot; • 2 hours ago
-                      </p>
-                    </div>
-                  </div>
-                  <Button variant="ghost" size="sm">
-                    View
-                  </Button>
-                </div>
-              ))}
-            </div> */}
-          </Card>
-        </div>
       </div>
 
       {/* Create Bot Modal */}

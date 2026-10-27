@@ -1,7 +1,5 @@
-import { createConnection } from "@/config/db";
 import { createChatbot, verifyToken } from "../../utils";
 import { auth } from "@/app/api/auth/[...nextauth]/route";
-await createConnection();
 export async function POST(req) {
 
   try {

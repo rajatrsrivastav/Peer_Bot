@@ -124,7 +124,7 @@ function Login() {
         <p className="mt-2 text-center text-sm text-brand-textLight">
           Or{' '}
           <Link href="/auth/signup" className="font-medium text-brand-primary hover:text-brand-primaryHover">
-            start your 14-day free trial
+            create an account
           </Link>
         </p>
       </div>
@@ -159,32 +159,6 @@ function Login() {
               value={form.password}
               onChange={handleForm}
             />
-
-            <div className="flex items-center justify-between">
-              <div className="flex items-center">
-                <input
-                  id="remember-me"
-                  name="remember-me"
-                  type="checkbox"
-                  className="h-4 w-4 text-brand-primary focus:ring-brand-primary border-gray-300 rounded"
-                />
-                <label
-                  htmlFor="remember-me"
-                  className="ml-2 block text-sm text-brand-textLight"
-                >
-                  Remember me
-                </label>
-              </div>
-
-              <div className="text-sm">
-                <a
-                  href="#"
-                  className="font-medium text-brand-primary hover:text-brand-primaryHover"
-                >
-                  Forgot your password?
-                </a>
-              </div>
-            </div>
 
             <Button fullWidth type="submit" isLoading={isLoading}>
               Sign in

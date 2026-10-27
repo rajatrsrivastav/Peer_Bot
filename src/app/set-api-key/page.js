@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { validateGeminiKey } from "@/services/ai";
 import "./setApiKey.css";
 
 function SetApiKey() {
@@ -20,7 +21,7 @@ function SetApiKey() {
 
     setIsLoading(true);
     try {
-      await validateKey(apiKey);
+      await validateGeminiKey(apiKey.trim());
       
       localStorage.setItem("geminiApiKey", apiKey);
       
@@ -58,7 +59,8 @@ function SetApiKey() {
           <br />
           <input
             className="input_form_api"
-            type="text"
+            type="password"
+            autoComplete="off"
             placeholder="Paste your Gemini API key here"
             value={apiKey}
             onChange={(e) => setApiKey(e.target.value)}

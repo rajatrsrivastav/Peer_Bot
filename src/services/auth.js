@@ -29,10 +29,10 @@ const extractErrorMessage = async (response) => {
   }
 };
 
-export const signup = async ({ email, password }) => {
+export const signup = async ({ name, email, password }) => {
   const response = await fetch("/api/auth/signup", {
     method: "POST",
-    body: JSON.stringify({ email, password }),
+    body: JSON.stringify({ name, email, password }),
     headers: {
       "Content-Type": "application/json",
     },

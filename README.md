@@ -1,36 +1,62 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# PeerBot
 
-## Getting Started
+PeerBot is a Next.js application for creating focused AI chatbots from custom instructions and context. It supports email/password and Google authentication, chatbot create/update/delete flows, a public chatbot gallery, and Gemini-powered conversations.
 
-First, run the development server:
+## Getting started
+
+1. Install dependencies:
+
+```bash
+npm install
+```
+
+2. Create `.env.local` with the following values:
+
+```dotenv
+MONGO_URL=your_mongodb_connection_string
+GEMINI_API_KEY=your_gemini_api_key
+GEMINI_MODEL=gemini-3.1-flash-lite
+NEXTAUTH_URL=http://localhost:3000
+NEXTAUTH_SECRET=your_random_secret
+GOOGLE_CLIENT_ID=your_google_oauth_client_id
+GOOGLE_CLIENT_SECRET=your_google_oauth_client_secret
+```
+
+`GEMINI_MODEL` and the Google OAuth values are optional. Email/password authentication works without Google OAuth, and users can validate and store their own Gemini key locally at `/set-api-key`.
+
+3. Start the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+For a local mentor demo, if `mongod` is installed, run the one-command isolated mode instead:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run demo
+```
 
-## Learn More
+Demo mode starts a temporary local database and removes it when the process stops. It does not use or modify the configured cloud database.
 
-To learn more about Next.js, take a look at the following resources:
+## Demo flow
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. Create an account or sign in.
+2. Open the dashboard and create a chatbot with a name and trusted context.
+3. Use **Chat** to ask a question that the context can answer.
+4. Return to the dashboard to update or delete the chatbot.
+5. Open **Explore** to view all community chatbots.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Quality checks
 
-## Deploy on Vercel
+```bash
+npm run lint
+npm run build
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Before a demo, verify that MongoDB is reachable and make one test request to Gemini. Provider availability and quotas are external dependencies.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## Deployment
+
+Configure the same environment variables in the hosting platform. For Google OAuth, add the deployed application URL and callback URL to the OAuth client configuration.

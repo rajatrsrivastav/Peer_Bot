@@ -1,19 +1,26 @@
 import mongoose from "mongoose";
 
-export const createConnection = () => {
+const cached = globalThis.__peerbotMongoose ?? { connection: null, promise: null };
+globalThis.__peerbotMongoose = cached;
+
+export const createConnection = async () => {
   if (!process.env.MONGO_URL) {
-    console.warn('⚠️ MONGO_URL not set, skipping database connection');
-    return Promise.resolve();
+    throw new Error("MONGO_URL is not configured");
   }
 
-  return mongoose
-    .connect(process.env.MONGO_URL)
-    .then(() => {
-      console.log(`✅ Connected to MongoDB`);
-    })
-    .catch((error) => console.log("❌ Error connecting to MongoDB:", error));
-}
+  if (cached.connection) return cached.connection;
 
-if (process.env.NODE_ENV === 'production') {
-  createConnection();
-}
+  if (!cached.promise) {
+    cached.promise = mongoose.connect(process.env.MONGO_URL, {
+      serverSelectionTimeoutMS: 5000,
+    });
+  }
+
+  try {
+    cached.connection = await cached.promise;
+    return cached.connection;
+  } catch (error) {
+    cached.promise = null;
+    throw error;
+  }
+};

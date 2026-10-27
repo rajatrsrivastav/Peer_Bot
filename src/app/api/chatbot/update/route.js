@@ -2,10 +2,10 @@ import { createConnection } from "@/config/db";
 import { verifyToken } from "../../utils";
 import { auth } from "@/app/api/auth/[...nextauth]/route";
 import ChatBot from "@/models/chatbots";
-await createConnection();
 
 export async function PUT(req) {
   try {
+    await createConnection();
     const session = await auth();
     let email = session?.user?.email;
 

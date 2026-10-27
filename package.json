@@ -5,9 +5,10 @@
   "type": "module",
   "scripts": {
     "dev": "next dev --turbopack",
+    "demo": "bash scripts/demo.sh",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "eslint ."
   },
   "dependencies": {
     "@auth/mongodb-adapter": "^3.11.1",

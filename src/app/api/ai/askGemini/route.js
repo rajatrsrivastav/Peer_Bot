@@ -2,18 +2,22 @@ import { createPrompt } from "../../helper";
 
 export async function POST(request) {
     try {
-        const { text, context, debug } = await request.json();
-        const prompt = createPrompt({ text, context });
-        const GEMINI_API_KEY = process.env.GEMINI_API_KEY;
+        const { text, context, debug, apiKey, validateOnly } = await request.json();
+        const geminiApiKey = apiKey?.trim() || process.env.GEMINI_API_KEY;
+        const model = process.env.GEMINI_MODEL || "gemini-3.1-flash-lite";
 
-        if (!GEMINI_API_KEY) {
+        if (!geminiApiKey) {
             return new Response(
                 JSON.stringify({
-                    reply: "AI service is not configured right now. Please try again later.",
-                    fallback: true,
+                    ...(validateOnly
+                        ? { valid: false, error: "A Gemini API key is required." }
+                        : {
+                            reply: "AI service is not configured right now. Please try again later.",
+                            fallback: true,
+                        }),
                 }),
                 {
-                    status: 200,
+                    status: validateOnly ? 400 : 200,
                     headers: {
                         "Content-Type": "application/json",
                     },
@@ -21,8 +25,16 @@ export async function POST(request) {
             );
         }
 
+        if (!validateOnly && (typeof text !== "string" || !text.trim())) {
+            return Response.json({ error: "A message is required." }, { status: 400 });
+        }
+
+        const prompt = validateOnly
+            ? "Reply only with OK."
+            : createPrompt({ text: text.trim(), context: typeof context === "string" ? context : "" });
+
         const response = await fetch(
-            `https://generativelanguage.googleapis.com/v1beta/models/gemini-flash-latest:generateContent?key=${GEMINI_API_KEY}`,
+            `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${encodeURIComponent(geminiApiKey)}`,
             {
                 method: "POST",
                 headers: {
@@ -43,6 +55,13 @@ export async function POST(request) {
         if (!response.ok) {
             const errorMessage = data?.error?.message || `Request failed with status ${response.status}`;
             const isDenied = /denied access|quota exceeded|rate limit|unavailable/i.test(errorMessage);
+
+            if (validateOnly) {
+                return Response.json(
+                    { valid: false, error: errorMessage },
+                    { status: response.status }
+                );
+            }
 
             // If client requested debug or debug enabled via env, forward provider response and original status
             const forwardErrors = debug || process.env.GEMINI_DEBUG === "true" || process.env.NEXT_PUBLIC_GEMINI_DEBUG === "true";
@@ -76,6 +95,10 @@ export async function POST(request) {
                     },
                 }
             );
+        }
+
+        if (validateOnly) {
+            return Response.json({ valid: true });
         }
 
         const reply = data?.candidates?.[0]?.content?.parts?.[0]?.text || "(No response received)";
